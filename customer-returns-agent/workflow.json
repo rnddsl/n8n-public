@@ -1,0 +1,1081 @@
+{
+  "name": "Customer Returns Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "customerId",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', `customer id`, 'string') }}"
+            },
+            {
+              "keyName": "email",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions1_Value', `customer's email address`, 'string') }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "025105e6-5a8f-475a-9ba6-3a0cec936fb8",
+      "name": "Lookup Customer",
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "orderNumber",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+            },
+            {
+              "keyName": "customerId",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions1_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "limit": 10
+      },
+      "id": "3739945b-98a2-40f2-ab44-c43cd98b8be1",
+      "name": "Lookup Order",
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "filters": {
+          "conditions": []
+        },
+        "limit": 1
+      },
+      "id": "b29a17c1-b414-470c-9479-a56f067248a5",
+      "name": "Lookup Product",
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        1408,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "763b888f-5700-47dd-a108-5458265d0d87",
+      "name": "Process Return",
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        1552,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"response\": \"The message to send to the customer\",\n  \"customerFound\": true,\n  \"orderFound\": true,\n  \"returnProcessed\": false,\n  \"nextStep\": \"What the customer should do next\"\n}\n",
+        "autoFix": true
+      },
+      "id": "e1f75d57-b641-4a48-94cc-5f8bb3bc7a0d",
+      "name": "Structured Output",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1648,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "customers",
+              "type": "array",
+              "value": "={{ [\n  { \"email\": \"john.doe.fake@gmail.com\", \"name\": \"John Doe\", \"customerId\": \"CUST-001\" },\n  { \"email\": \"jane.smith.fake@gmail.com\", \"name\": \"Jane Smith\", \"customerId\": \"CUST-002\" },\n  { \"email\": \"bob.wilson.fake@gmail.com\", \"name\": \"Bob Wilson\", \"customerId\": \"CUST-003\" }\n] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d80e1699-16e5-4f1c-998d-83f86453e801",
+      "name": "Customer Sample Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "customers",
+        "options": {}
+      },
+      "id": "055e9745-0655-4bf5-a7b4-397084866c4c",
+      "name": "Split Customers",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        304,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.email }}",
+            "name": "={{ $json.name }}",
+            "customerId": "={{ $json.customerId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "customerId",
+              "displayName": "customerId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "2efa666f-8e0f-413b-bfaa-44c6e0a16597",
+      "name": "Insert Customers",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "orders",
+              "type": "array",
+              "value": "={{ [\n  { \"orderNumber\": \"ORD-12345\", \"customerId\": \"CUST-001\", \"productId\": \"PROD-001\", \"status\": \"delivered\", \"orderDate\": \"2024-01-15\" },\n  { \"orderNumber\": \"ORD-12346\", \"customerId\": \"CUST-002\", \"productId\": \"PROD-002\", \"status\": \"delivered\", \"orderDate\": \"2024-01-20\" },\n  { \"orderNumber\": \"ORD-12347\", \"customerId\": \"CUST-001\", \"productId\": \"PROD-003\", \"status\": \"shipped\", \"orderDate\": \"2024-02-01\" }\n] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "af5205b6-a02c-43a1-baed-7f94a0f65ee1",
+      "name": "Order Sample Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "orders",
+        "options": {}
+      },
+      "id": "0894ca41-5757-4a04-9849-24fa020480ad",
+      "name": "Split Orders",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        304,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "orderNumber",
+              "displayName": "orderNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "customerId",
+              "displayName": "customerId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "productId",
+              "displayName": "productId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "orderDate",
+              "displayName": "orderDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "06c47d47-1e0d-4727-b7c3-38f47e297d91",
+      "name": "Insert Orders",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "products",
+              "type": "array",
+              "value": "={{ [\n  { \"productId\": \"PROD-001\", \"name\": \"Running Shoes\", \"price\": 89.99, \"category\": \"Footwear\" },\n  { \"productId\": \"PROD-002\", \"name\": \"Laptop Backpack\", \"price\": 49.99, \"category\": \"Accessories\" },\n  { \"productId\": \"PROD-003\", \"name\": \"Wireless Mouse\", \"price\": 29.99, \"category\": \"Electronics\" }\n] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "67bf34b5-3cc5-4fc1-bbf4-0d668dfb42e0",
+      "name": "Product Sample Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        1264
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "products",
+        "options": {}
+      },
+      "id": "6d832c6e-b83c-4ea7-8935-7ceb13354bc7",
+      "name": "Split Products",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        304,
+        1264
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "productId",
+              "displayName": "productId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "0dd01971-9d54-4d7a-b7d7-239e3ad5b525",
+      "name": "Insert Products",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        1264
+      ]
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful customer service agent for processing returns.\n\nYour tools:\n- Lookup Customer: Find customer by email\n- Lookup Order: Find orders by order number\n- Lookup Product: Get product details by product ID\n- Process Return: Create a return request\n\nProcess:\n1. Ask for customer email or order number if not provided\n2. Use Lookup Customer or Lookup Order to verify the customer\n3. If order found, use Lookup Product to get product details\n4. Ask for return reason\n5. Use Process Return to create the return request\n6. Confirm return request created with details\n\nBe friendly, professional, and guide customers through each step.",
+          "maxIterations": 15,
+          "returnIntermediateSteps": true
+        }
+      },
+      "id": "96a6e222-b4d0-4ffe-8b7a-f820442d21cb",
+      "name": "Customer Service Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1120,
+        240
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "597bca85-0f5a-469f-904e-b414c4df271c",
+      "name": "Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        928,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Evaluation System\nRun multi-turn conversation test scenarios to evaluate agent performance",
+        "height": 264,
+        "width": 2576,
+        "color": 3
+      },
+      "id": "1a9cf7fb-ba7f-4245-a1d4-d8c8d7093cba",
+      "name": "Sticky Note ad5dad86",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Sample Data Setup\nPopulate data tables with test customers, orders, and products. Create data tables for each category and link to the data table node",
+        "height": 824,
+        "width": 808,
+        "color": 4
+      },
+      "id": "9ee12aa1-43ba-442a-9652-7c2c1691b7c6",
+      "name": "Sticky Note eb61a026",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        992,
+        720
+      ],
+      "id": "fa8d7563-41dd-40f4-b7b0-96b1f7da29ba",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XXXXXXXXXXXXXXXX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        384,
+        320
+      ],
+      "id": "42168fde-624b-4c19-bb43-5dd98318a705",
+      "name": "When chat message received",
+      "webhookId": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "filterRows": true,
+        "filters": {
+          "conditions": [
+            {
+              "condition": "gt",
+              "keyValue": "3"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.evaluationTrigger",
+      "typeVersion": 4.7,
+      "position": [
+        144,
+        16
+      ],
+      "id": "323a7012-2ed0-481c-b009-c4f6bcb56541",
+      "name": "When fetching a dataset row"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "history",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "id": "8baedbab-7df2-4ff9-887f-0a5f59b3c5e5",
+      "name": "Split Chat History",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2c0a3fde-e1b7-469c-af1b-8fa8f1392f1d",
+              "name": "chatInput",
+              "value": "={{ $json.user_message }}",
+              "type": "string"
+            },
+            {
+              "id": "824aa69c-33b6-4610-8b43-5920a3686dd5",
+              "name": "sessionId",
+              "value": "={{ $json.session }}",
+              "type": "string"
+            },
+            {
+              "id": "9b92aed5-e9f6-433c-8218-702864047bae",
+              "name": "=history",
+              "value": "={{ JSON.parse($json.chat_history).map(msg => ({     role: msg.role === 'assistant' ? 'ai' : msg.role,     text: msg.text   })) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        16
+      ],
+      "id": "8d9a7bd3-1490-44f3-8cb9-44dc7ca4b54d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "={{ $json.history.role }}",
+              "message": "={{ $json.history.text }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        -32
+      ],
+      "id": "c06dcd97-d407-43da-8614-bba554ea58dd",
+      "name": "Chat Memory Manager"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        720,
+        240
+      ],
+      "id": "813f3c93-a9f9-4cc5-99e3-52a0e8a0a466",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "operation": "checkIfEvaluating"
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        1504,
+        0
+      ],
+      "id": "aaeee27d-cdb5-49c2-8818-870ec307bbdf",
+      "name": "Evaluation"
+    },
+    {
+      "parameters": {
+        "operation": "setMetrics",
+        "expectedAnswer": "={{ $('When fetching a dataset row').item.json.expected }}",
+        "actualAnswer": "={{ $('Customer Service Agent').item.json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        1824,
+        -64
+      ],
+      "id": "90c81fc5-7e3f-4cbe-90ee-9a730fddcd4f",
+      "name": "Eval Correctness"
+    },
+    {
+      "parameters": {
+        "operation": "setMetrics",
+        "metric": "toolsUsed",
+        "expectedTools": "={{ JSON.parse($('When fetching a dataset row').item.json.deterministic_metrics).tools.toString() }}",
+        "intermediateSteps": "={{ $('Customer Service Agent').item.json.intermediateSteps }}",
+        "options": {
+          "metricName": "Tools Used"
+        }
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        1840,
+        48
+      ],
+      "id": "ad9dd6a5-0691-4420-9f3e-cf7b33baa7e7",
+      "name": "Eval - Tool Use"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2064,
+        96
+      ],
+      "id": "45fe55a4-3d90-4218-9189-b8270ea62328",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XXXXXXXXXXXXXXXX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "outputs": {
+          "values": [
+            {
+              "outputName": "correctness",
+              "outputValue": "={{ $json.Correctness }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        2240,
+        -32
+      ],
+      "id": "c7d0ca3d-46c6-4b1b-94ed-2c1b102e6cac",
+      "name": "Evaluation1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1712,
+        752
+      ],
+      "id": "324c4289-c3fb-486d-911f-ed1e315aa49c",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XXXXXXXXXXXXXXXX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Lookup Customer": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Order": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Product": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Return": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Sample Data": {
+      "main": [
+        [
+          {
+            "node": "Split Customers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Customers": {
+      "main": [
+        [
+          {
+            "node": "Insert Customers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order Sample Data": {
+      "main": [
+        [
+          {
+            "node": "Split Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Orders": {
+      "main": [
+        [
+          {
+            "node": "Insert Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Sample Data": {
+      "main": [
+        [
+          {
+            "node": "Split Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Products": {
+      "main": [
+        [
+          {
+            "node": "Insert Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Chat Memory Manager",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When fetching a dataset row": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Chat History": {
+      "main": [
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Chat History",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory Manager": {
+      "main": [
+        []
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Customer Service Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Service Agent": {
+      "main": [
+        [
+          {
+            "node": "Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluation": {
+      "main": [
+        [
+          {
+            "node": "Eval Correctness",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Eval - Tool Use",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Eval Correctness",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eval Correctness": {
+      "main": [
+        [
+          {
+            "node": "Evaluation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eval - Tool Use": {
+      "main": [
+        [
+          {
+            "node": "Evaluation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5699fc89-8e05-451b-9487-ee27618fa7f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  },
+  "id": "XXXXXXXXXXXXXXXX",
+  "tags": []
+}
