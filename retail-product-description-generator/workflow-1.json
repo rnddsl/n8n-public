@@ -1,0 +1,640 @@
+{
+  "name": "retail-product-description-generator-bulk",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Product Description Generator",
+        "formDescription": "Input a product name, category, and details specs, and brand voice. Choose from predefined tone or define your own custom tone using the custom field. \n\nClick submit to generate a product details page description, a short social caption, and a meta description — all in a consistent brand voice. ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Brand Voice",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Tone",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Casual"
+                  },
+                  {
+                    "option": "Professional"
+                  },
+                  {
+                    "option": "Informative"
+                  },
+                  {
+                    "option": "Custom"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Custom Brand Tone"
+            },
+            {
+              "fieldType": "html",
+              "html": "<!-- Your custom HTML here --->\n<div style=\"background-color: lightblue\">\n  Your data should be in .csv, xls, or xlsx format and must contain the following columns:\n<br/>\n<ul>\n  <li>product_name</li>\n  <li>product_specs</li>\n  <li>product category</li>\n</ul>\n<br/>\n</div>\n"
+            },
+            {
+              "fieldLabel": "Bulk Upload",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "={{ `[download](https://webhook.example.com/fake }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -752,
+        -208
+      ],
+      "id": "db451f9c-eacd-4a7a-a70a-abc913a60485",
+      "name": "On form submission",
+      "webhookId": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XXXXXXXXXXXXXXXX",
+          "mode": "list",
+          "cachedResultName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "cachedResultUrl": "/projects/XXXXXXXXXXXXXXXXX/datatables/XXXXXXXXXXXXXXXXX"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pdp_description": "={{ $json.output.pdp_description }}",
+            "social_caption": "={{ $json.output.social_caption }}",
+            "meta_description": "={{ $json.output.meta_description }}",
+            "product_name": "={{ $('Edit Fields').item.json.product_name }}",
+            "tone": "={{ $('On form submission').item.json.Tone.toLowerCase() === 'custom' ? $('On form submission').item.json['Custom Brand Tone'] : $('On form submission').item.json.Tone }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_name",
+              "displayName": "product_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "XXXXXXXXXXXXXXXX",
+              "displayName": "pdp_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "XXXXXXXXXXXXXXXX",
+              "displayName": "meta_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "XXXXXXXXXXXXXXXX",
+              "displayName": "social_caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tone",
+              "displayName": "tone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        -224
+      ],
+      "id": "7554c731-d15a-47ab-9dff-26f49eab26ed",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a marketing copywriter for an ecommerce site. Use the following product name, product category, product specs, brand voice, and tone to generate a PDP (product detail page) description of the product, a short social caption, and a meta description — all in the brand's voice. \n\nProduct detail page length should be 150-300 words. First 50–100 words should highlight the primary value proposition and key benefit to hook mobile shoppers. Next 100+ words should provide detailed specifications, sizing guides, use cases, and remaining product spec content to satisfy research-oriented buyers and search engine crawlers. Use the brand voice and tone to tailor the message appropriately\n\n{{ $json['additionalInstructions'] ?  $json['additionalInstructions'] : ''}}\n\nExport content as json object with following fields: { \"pdp_description\", \"social_caption\", \"meta_description\"}\n\nBrand Voice: {{ $('On form submission').item.json['Brand Voice'] }}\nTone: {{ $json.selected_tone }}\nProduct Name:  {{ $('Edit Fields').item.json.product_name }},\nProduct Category: {{ $('Edit Fields').item.json.product_category }},\nProduct Specs: {{ $('Edit Fields').item.json.product_specs }}",
+        "hasOutputParser": true,
+        "batching": {
+          "batchSize": 10,
+          "delayBetweenBatches": 1000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        592,
+        -224
+      ],
+      "id": "f45bedfd-fb86-4a50-b985-a0d544877f4b",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 1500
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\n  \"pdp_description\": \"description text\", \"social_caption\": \"Mamba mentality unleashed. 🐍 The Kobe IX Elite Low EM Protro delivers elite breathability, responsive React cushioning, and unstoppable traction. Dominate the court in Purple Dynasty. #KobeIX #BasketballKicks #MambaMentality #ElitePerformance\",  \n  \"meta_description\": \"Kobe IX Elite Low EM Protro men's basketball sneakers. Experience breathable mesh, responsive Nike React cushioning, and durable traction in Purple Dynasty. Elevate your game.\"\n  \n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        -48
+      ],
+      "id": "638cf159-8413-4255-bb78-8e79e0597a8f",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        -48
+      ],
+      "id": "2b550525-0f1b-4bc7-9e81-0b8e2da636a7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XXXXXXXXXXXXXXXX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"selected_tone\": \"{{ $json['Tone'] }}\",\n  \"finalBrandTone\": \"{{  $json['Tone']  == 'Custom' ? $json['Custom Brand Tone'] : ($json.tone == 'Warm' ? 'Write in a supportive, empathetic, and inviting tone.' : ($json.tone == 'Professional' ? 'Write in a formal, concise, and business-appropriate tone.' : 'Write in a casual, conversational, and approachable tone.')) }}\"\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        -112
+      ],
+      "id": "a6daf656-6fcf-4779-b7d6-bde12e64828b",
+      "name": "Set Preset Tone",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3422c4e4-3fbf-4745-bb78-9960aa1764ca",
+              "name": "finalBrandVoice",
+              "value": "={{ $json['Brand voice'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        -288
+      ],
+      "id": "24ce3bc5-2b03-480f-9ee6-8fb334cd2544",
+      "name": "set Custom Tone"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b5d97f90-48f8-4ac7-a4b7-8a7448234dc8",
+              "leftValue": "={{ $('On form submission').item.json.Tone.toLowerCase().toString() }}",
+              "rightValue": "={{\"custom\"}}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        144,
+        -224
+      ],
+      "id": "e9fbfeda-de14-4bf4-b021-7c34bac197b9",
+      "name": "Check for custom Tone"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json[\"Bulk Upload\"][0].mimetype }}",
+                    "rightValue": "={{ \"text/csv\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d5f9d51a-6c0a-4198-80ce-9bf03ef25630"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "csv"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fcab0a86-5de7-4a3e-80bd-673578b0bf16",
+                    "leftValue": "={{ $json[\"Bulk Upload\"][0].mimetype }}",
+                    "rightValue": "={{ \"application/vnd.ms-excel\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "xls"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "bba10a2a-e295-4243-a1cb-989c309b610d",
+                    "leftValue": "={{ $json[\"Bulk Upload\"][0].mimetype }}",
+                    "rightValue": "={{ \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "xlsx"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        -240
+      ],
+      "id": "95b3492a-aaa9-44ac-8301-724622086d7f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b6ca00da-ac7b-4bdd-aad9-3440fd910980",
+              "name": "product_name",
+              "value": "={{ $json.product_name }}",
+              "type": "string"
+            },
+            {
+              "id": "dca50c86-f60d-44af-a39c-4f4ea4981ab1",
+              "name": "product_category",
+              "value": "={{ $json.product_category }}",
+              "type": "string"
+            },
+            {
+              "id": "d9f1965a-5c99-47df-aba4-8c97cfac309f",
+              "name": "product_specs",
+              "value": "={{ $json.product_specs }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -224
+      ],
+      "id": "b87318c5-b554-4c48-b9e3-55329f55777f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "Bulk_Upload",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -144
+      ],
+      "id": "2fca8c66-bbae-4f23-b463-cb9a1138a2b9",
+      "name": "Extract from XLSX"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "=Bulk_Upload",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -320
+      ],
+      "id": "3f7b85db-1dc2-4be7-bd4d-374291e23315",
+      "name": "Extract from CSV"
+    },
+    {
+      "parameters": {
+        "content": "## documentation:\n\n### Overview \n* generate product descriptions for ecommerce in bulk, via n8n form\n\n### User experience \n* within the form user, defines brand voice to keep messaging consistent across marketing, \n* chooses a preset or custom tone depending on the specific products (eg Playful, Luxury, Informative) \n* attaches a csv, or xlsx file with product data\n* Workflow generates\n** pdp description, social caption, and meta description, all in the specified brand voice and tone.\n** generated content is added to a n8n data table\n \n* calls a separate workflow that has a webhook listener that retrieves the data and downloads the content as a csv",
+        "height": 400,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -752,
+        -688
+      ],
+      "typeVersion": 1,
+      "id": "735f7aaf-5b33-44da-9300-4a878b46b812",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Content Successfully Generated",
+        "completionMessage": "={{`<a href='https://webhook.example.com/fake'>Download</a>`}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        1104,
+        -224
+      ],
+      "id": "1eed4a1f-0a64-46ef-84f7-68b59c5f6716",
+      "name": "Form",
+      "webhookId": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Preset Tone": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set Custom Tone": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for custom Tone": {
+      "main": [
+        [
+          {
+            "node": "set Custom Tone",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Preset Tone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extract from CSV",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Extract from XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Check for custom Tone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from XLSX": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from CSV": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f7f4d7d2-5b5f-4cf0-ba75-f62172a3006f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  },
+  "id": "XXXXXXXXXXXXXXXX",
+  "tags": []
+}
